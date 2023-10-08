@@ -1,0 +1,27 @@
+    #[Route('/new-alias_name', name: 'app_new_alias_name')]
+    public function newEntityName(
+        Request $request,
+        EntityNameUserService $user_alias_name,
+        EntityNameService $alias_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content);
+
+        $obj = $user_alias_name->createUserEntityName($data);
+
+        try {
+            if($obj['message']){
+                return $this->Json(['message' => $obj['message']]);
+            }
+        } catch (\Throwable $th) {
+            return $this->Json([
+                "username" => $obj['Username'],
+                "password" => $obj['Password'],
+                "alias_name" =>  $alias_name->readEntityName(
+                    $obj['alias_name']->getId()
+                )
+            ]);
+        }
+        
+    }  

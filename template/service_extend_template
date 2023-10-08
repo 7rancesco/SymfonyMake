@@ -1,0 +1,95 @@
+<?php
+namespace App\Service;
+use App\Service\EntityNameService;
+use App\Service\UserService;
+use App\Service\RandomPassword;
+ 
+class EntityNameUserService{
+
+    public function __construct(
+        UserService $user,
+        RandomPassword $hash,
+        EntityNameService $alias_name
+    )
+    {
+        $this->user = $user;
+        $this->hash = $hash;
+        $this->alias_name = $alias_name;
+    }
+ 
+    public function createUserEntityName($data)
+    {
+        $data->roles = [
+            #roles
+        ];
+        $r_password = $this->hash->create_randomPassword();
+        $data->password = $r_password;
+
+        $isUserExist = $this->user->findBy([ 'username' => $data->username]);
+
+        if($isUserExist)
+        {
+            return array('message' => 'username exist');
+        }
+        
+        $newUser = $this->user->createUser(
+            $data->username,
+            $data->password,
+            $data->roles            
+        );
+
+        $data->user_id = $newUser->getId();
+        $newEntityName = $this->alias_name->createEntityName($data);
+
+        return array(
+            'Username' => $newUser->getUsername(),
+            'Password' => $r_password,
+            'alias_name' => $newEntityName
+        ); 
+    }
+
+    public function resetPasswordEntityName($id)
+    {
+        $r_password = $this->hash->create_randomPassword();
+        $user_id = $this->alias_name->findEntityName($id);
+        $update = $this->user->updateUserPassword($user_id->getUserId(), $r_password);
+
+        if($update)
+        {
+            return [
+                'message' => 'Password reset',
+                'new password is: ' => $r_password
+            ];
+        }
+    }
+
+    public function updatePasswordEntityName($password)
+    {
+
+        $update = $this->user->updateUserPassword(
+            $this->user->getCurrentUser()->getId(), 
+            $password
+        );
+
+        if($update)
+        {
+            return [
+                'message' => 'Password changed'
+            ];
+        }
+
+    }
+
+    public function deleteUserEntityName($id)
+    {
+        $currentEntityName = $this->alias_name->findEntityName($id);
+        $userId = $currentEntityName->getUserId();
+        $this->user->deleteUser($userId);
+        $this->alias_name->deleteEntityName($id);
+
+        return [
+            'message' => 'EntityName rimosso'
+        ];
+    }
+ 
+}

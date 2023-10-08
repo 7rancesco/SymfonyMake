@@ -1,0 +1,51 @@
+<?php
+
+    include 'template/util.php';
+    include 'lib/read_entity.php';
+
+    echo $spacer;
+    echo $colorPurple.'Enter entity name: '.$colorReset;
+    $a = (string)readline('');
+
+
+    $filePath       = getcwd().'/src/Entity/'.$a.'.php';
+
+    if(!file_exists($filePath))
+    {
+        echo $colorRed.'Entity '.$a.' don\'t exist!'.$colorReset;
+        echo $spacer;
+        return;
+    }
+
+    $entityFile     = fopen($filePath, "r");
+    $entityString   = fread($entityFile,filesize($filePath));
+
+    $setterArray = getEntityMethods('set', $entityString);
+    $getterArray = getEntityMethods('get', $entityString);
+
+
+    $templatePath       = getcwd().'/bin/make/template/service_template';
+    $templateFile       = fopen($templatePath, "r");
+    $templateString     = fread($templateFile,filesize($templatePath));
+
+    $getter = '';
+    $setter = '';
+
+    foreach ($setterArray as $key => $value) {
+        $setter = $setter.'        '.$value.$spacer;
+    }
+
+    foreach ($getterArray as $key => $value) {
+        $getter = $getter.'            '.$value.$spacer;
+    }
+
+    $templateString = str_replace('#Getter', $getter, $templateString);
+    $templateString = str_replace('#Setter', $setter, $templateString);
+    $templateString = str_replace('EntityName', $a, $templateString);
+    
+    $serviceFile = fopen(getcwd().'/src/Service/'.$a.'Service.php', "w");
+    fwrite($serviceFile, $templateString);
+
+    echo $spacer;
+    echo $colorGreen.'Created: '.$colorReset.$a.'Service.php @src/Service/'.$a.'Service.php';
+    echo $spacer;

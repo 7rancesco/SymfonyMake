@@ -1,0 +1,77 @@
+<?php
+namespace App\Service;
+use App\Entity\EntityName;
+use Doctrine\ORM\EntityManagerInterface;
+ 
+class EntityNameService{
+ 
+    public function __construct(EntityManagerInterface $em){$this->em = $em;}
+ 
+    public function createEntityName($data)
+    {
+        $obj = new EntityName(); 
+
+#Setter
+ 
+        $this->em->persist($obj);
+        $this->em->flush();
+ 
+        return $obj;
+    }
+ 
+    public function readEntityName($id)
+    {
+        $obj = $this->findEntityName($id);
+
+        return [
+#Getter
+        ];
+    }
+ 
+    public function updateEntityName($data)
+    {
+        $obj = $this->findEntityName($data->id);
+
+#Setter
+
+        $this->em->flush();
+
+        return $obj;
+    }
+ 
+    public function deleteEntityName($id)
+    {
+        $obj = $this->findEntityName($id);
+
+        $this->em->remove($obj);
+        $this->em->flush();        
+
+        return true;
+ 
+    }
+ 
+    public function findEntityName($id)
+    {
+        $obj = $this->em->getRepository(EntityName::class)->find($id); 
+        return $obj;
+    }
+ 
+    public function findEntityNameBy($array)
+    {
+        $objs = $this->em->getRepository(EntityName::class)->findBy($array); 
+        return $objs;
+    }
+ 
+    public function findOneEntityNameBy($array)
+    {
+        $obj = $this->em->getRepository(EntityName::class)->findOneBy($array); 
+        return $obj;
+    }
+
+    public function findAllEntityName()
+    {
+        $obj = $this->em->getRepository(EntityName::class)->findAll(); 
+        return $obj;
+    }    
+ 
+}

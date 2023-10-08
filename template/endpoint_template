@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+use App\Service\ServiceNameService;
+
+
+#[Route('/api-service_name', name: 'app_service_name')]
+class ServiceNameApiController extends AbstractController
+{
+
+    #[Route('/new-service_name', name: 'app_new_service_name')]
+    public function newServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content);
+
+        return $this->Json(
+            $service_name->readServiceName(
+                $service_name->createServiceName($data)->getId()
+            )
+        );
+    }        
+
+    #[Route('/get-service_name', name: 'app_get_service_name')]
+    public function getServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content);
+
+        return $this->Json(
+            $service_name->readServiceName($data->id)
+        );
+    }        
+
+    #[Route('/edit-service_name', name: 'app_edit_service_name')]
+    public function editServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content);
+
+        return $this->Json(
+            $service_name->readServiceName(
+                $service_name->updateServiceName($data)->getId()
+            )
+        );        
+    }        
+
+    #[Route('/remove-service_name', name: 'app_remove_service_name')]
+    public function removeServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content);
+
+        return $this->Json(
+            $service_name->deleteServiceName($data->id)
+        );
+    }              
+
+    #[Route('/findby-service_name', name: 'app_findby_service_name')]
+    public function findbyServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        $result = $service_name->findServiceNameBy($data);
+        $output = array();
+        if(count($result))
+        {
+            foreach ($result as $element) {
+                array_push($output, $service_name->readServiceName($element->getId()));
+            }
+        }
+
+        return $this->Json(
+            $output
+        );
+    }        
+
+    #[Route('/findoneby-service_name', name: 'app_findoneby_service_name')]
+    public function findonebyServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        return $this->Json(
+            $service_name->readServiceName(
+                $service_name->findOneServiceNameBy($data)->getId()
+            )
+        );
+    }    
+
+    #[Route('/findall-service_name', name: 'app_findall_service_name')]
+    public function findAllServiceName(
+        Request $request,
+        ServiceNameService $service_name
+    ):JsonResponse
+    {
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        $result = $service_name->findAllServiceName();
+        $output = array();
+        if(count($result))
+        {
+            foreach ($result as $element) {
+                array_push($output, $service_name->readServiceName($element->getId()));
+            }
+        }
+
+        return $this->Json(
+            $output
+        );
+    }         
+}    

@@ -1,0 +1,16 @@
+<?php 
+
+    include 'template/util.php';
+
+    copy(getcwd().'/bin/make/template/UserService.php',getcwd().'/src/Service/UserService.php');
+
+    echo $spacer;
+
+    echo $colorGreen.'Created: '.$colorReset.'UserService.php @/src/Service/UserService.php';
+
+    echo $spacer;
+    
+    copy(getcwd().'/bin/make/template/RandomPassword.php',getcwd().'/src/Service/RandomPassword.php');
+    echo $spacer;
+    echo $colorGreen.'Created: '.$colorReset.'RandomPassword.php @/src/Service/RandomPassword.php';        
+    echo $spacer;

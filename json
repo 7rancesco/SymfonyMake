@@ -1,0 +1,38 @@
+<?php
+    
+    include 'template/util.php';
+    include 'lib/read_entity.php';
+
+    echo $spacer;
+    echo $colorPurple.'Enter entity name: '.$colorReset;
+    $a = (string)readline('');
+
+
+    $filePath       = getcwd().'/src/Entity/'.$a.'.php';
+
+    if(!file_exists($filePath))
+    {
+        echo $colorRed.'Entity '.$a.' don\'t exist!'.$colorReset;
+        echo $spacer;
+        return;
+    }
+
+    $entityFile     = fopen($filePath, "r");
+    $entityString   = fread($entityFile,filesize($filePath));
+
+    $getterArray = getEntityMethods('get', $entityString);
+
+    echo $spacer.'{';
+
+        foreach ($getterArray as $key => $value) {
+            $position = findAllOccurrences($value, '=>')[0];
+            $value = substr($value,0,$position);
+            echo $spacer.'  '.$value.' : '.'"",';
+        }
+
+    echo $spacer.'}';
+
+    echo $spacer;
+    echo $spacer;
+
+    

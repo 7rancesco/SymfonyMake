@@ -1,0 +1,33 @@
+<?php
+
+include 'template/util.php';
+
+echo $spacer;
+echo $colorPurple.'Enter service name: '.$colorReset;
+$a = (string)readline('');    
+
+
+$filePath       = getcwd().'/src/Service/'.$a.'.php';
+
+if(!file_exists($filePath))
+{
+    echo $colorRed.'Service '.$a.' don\'t exist!'.$colorReset;
+    echo $spacer;
+    return;
+}
+
+$templatePath       = getcwd().'/bin/make/template/endpoint_template';
+$templateFile       = fopen($templatePath, "r");
+$templateString     = fread($templateFile,filesize($templatePath));
+
+$name = str_replace('Service', '', $a);
+$nameLower = strtolower($name);
+$templateString = str_replace('ServiceName', $name, $templateString);
+$templateString = str_replace('service_name', $nameLower, $templateString);
+    
+$controllerFile = fopen(getcwd().'/src/Controller/'.$name.'ApiController.php', "w");
+fwrite($controllerFile, $templateString);
+
+echo $spacer;
+echo $colorGreen.'Created: '.$colorReset.$name.'ApiController.php @src/Controller/'.$name.'ApiController.php';
+echo $spacer;

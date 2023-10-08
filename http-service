@@ -1,0 +1,30 @@
+<?php 
+
+    include 'template/util.php';
+
+    copy(getcwd().'/bin/make/template/Connection.php',getcwd().'/src/Entity/Connection.php');
+
+    echo $spacer;
+
+    echo $colorGreen.'Created: '.$colorReset.'Connection.php @/src/Entity/Connection.php';
+
+    echo $spacer;
+    echo $colorPurple.'RUN: '.$colorReset.'php bin/console make:migration';
+    echo $spacer;
+
+
+    copy(getcwd().'/bin/make/template/ConnectionService.php',getcwd().'/src/Service/ConnectionService.php');
+
+    echo $spacer;
+
+    echo $colorGreen.'Created: '.$colorReset.'ConnectionService.php @/src/Service/ConnectionService.php';
+
+    echo $spacer;
+    echo $colorPurple.'Mysql: '.$colorReset.'"INSERT INTO mydb.connection (name, login, prefix, user, pass, duration) VALUES ();"';
+    echo $spacer;
+
+    echo $spacer;
+    echo $colorPurple.'How to use: '.$colorReset;
+    echo $spacer.'use App\Service\ConnectionService';
+    echo $spacer.'->useFetch(apiname, method, endpoint, body request (if !GET))';
+    echo $spacer;

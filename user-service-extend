@@ -1,0 +1,57 @@
+<?php
+
+    include 'template/util.php';
+    include 'lib/read_entity.php';
+
+    echo $spacer;
+    echo $colorPurple.'Wich entity do you want etends?: '.$colorReset;
+    $a = (string)readline('');
+
+    $filePath       = getcwd().'/src/Entity/'.$a.'.php';
+
+    if(!file_exists($filePath))
+    {
+        echo $colorRed.'Entity '.$a.' don\'t exist!'.$colorReset;
+        echo $spacer;
+        return;
+    }    
+
+    echo $spacer;
+    echo $colorPurple.'Set default roles array: '.$colorReset;
+    echo $spacer;
+    echo $colorPurple.'Ex: '.$colorReset."'ROLE_USER', 'OTHER_ROLE'";
+    echo $spacer;
+    $b = (string)readline('');
+
+    $templatePath       = getcwd().'/bin/make/template/service_extend_template';
+    $templateFile       = fopen($templatePath, "r");
+    $templateString     = fread($templateFile,filesize($templatePath));    
+
+    $templateString = str_replace('EntityName', $a, $templateString);
+    $templateString = str_replace('alias_name', strtolower($a), $templateString);
+    $templateString = str_replace('#roles', $b, $templateString);
+
+    $serviceFile = fopen(getcwd().'/src/Service/'.$a.'UserService.php', "w");
+    fwrite($serviceFile, $templateString);
+
+    echo $spacer;
+    echo $colorGreen.'Created: '.$colorReset.$a.'UserService.php @src/Service/'.$a.'UserService.php';
+    echo $spacer;
+    echo $colorGreen.'NOW: '.$colorReset.'In your controller';
+    echo $spacer;
+    echo $colorPurple.'- use'.$colorGreen.' App\Service\\'.$colorReset.$a.'UserService;';
+    echo $spacer;
+    echo $colorPurple.'- Edit '.$colorReset.' endpoint controller methods: (create, remove); using EntityUser methods.';
+    echo $spacer;
+    echo $colorPurple.'- Create User endopint example:'.$colorReset;
+        echo $spacer;
+        $templatePath       = getcwd().'/bin/make/template/create_user_example';
+        $templateFile       = fopen($templatePath, "r");
+        $templateString     = fread($templateFile,filesize($templatePath));    
+
+        $templateString = str_replace('EntityName', $a, $templateString);
+        $templateString = str_replace('alias_name', strtolower($a), $templateString);
+        echo $templateString;
+    echo $spacer;
+    echo $colorPurple.'- Add'.$colorReset.' endpoint controller methods: (update password, reset password)';
+    echo $spacer;
